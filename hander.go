@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/pkg/api"
+	"api/pkg/validator"
 	"api/spec"
 	"errors"
 	"github.com/gofiber/fiber/v2"
@@ -9,6 +10,7 @@ import (
 )
 
 type Handler struct {
+	validate    *validator.ValidateSchema
 	userService spec.UserService
 }
 
@@ -30,6 +32,10 @@ func (h *Handler) create(ctx *fiber.Ctx) error {
 	body := new(spec.UserBody)
 	if err := ctx.BodyParser(body); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(api.HandlerErrorHttp(ServiceName, 1, "validate"))
+	}
+
+	if validate := h.validate.ValidateHandleError(body); validate != nil {
+		return ctx.JSON(validate)
 	}
 
 	return ctx.Status(http.StatusCreated).JSON(fiber.Map{"created": true, "data": body})

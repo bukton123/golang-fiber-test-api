@@ -3,6 +3,7 @@ package main
 import (
 	"api/pkg/api"
 	"api/pkg/env"
+	"api/pkg/validator"
 	"api/service"
 	"github.com/gofiber/fiber/v2"
 	"time"
@@ -22,6 +23,7 @@ func main() {
 		IdleTimeout:  5 * time.Second,
 	})
 	handler := Handler{
+		validate:    validator.New(),
 		userService: service.NewUserService(),
 	}
 
