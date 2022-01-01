@@ -8,7 +8,9 @@ import (
 	"net/http"
 )
 
-type Handler struct{}
+type Handler struct {
+	userService spec.UserService
+}
 
 func (h *Handler) register(app *fiber.App) {
 	app.Get("/users", h.main)
@@ -17,7 +19,7 @@ func (h *Handler) register(app *fiber.App) {
 }
 
 func (h *Handler) main(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{"test": 123})
+	return ctx.JSON(fiber.Map{"data": h.userService.Find()})
 }
 
 func (h *Handler) err(ctx *fiber.Ctx) error {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/pkg/logging"
+	"api/service"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
@@ -25,7 +26,9 @@ func main() {
 			return ctx.Status(code).JSON(logging.HandlerErrorHttp(ServiceName, 0, http.StatusText(http.StatusInternalServerError)))
 		},
 	})
-	handler := Handler{}
+	handler := Handler{
+		userService: service.NewUserService(),
+	}
 
 	handler.register(app)
 	app.Listen(":8080")
