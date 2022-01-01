@@ -1,7 +1,7 @@
 package main
 
 import (
-	"api/pkg/logging"
+	"api/pkg/api"
 	"api/spec"
 	"errors"
 	"github.com/gofiber/fiber/v2"
@@ -29,7 +29,7 @@ func (h *Handler) err(ctx *fiber.Ctx) error {
 func (h *Handler) create(ctx *fiber.Ctx) error {
 	body := new(spec.UserBody)
 	if err := ctx.BodyParser(body); err != nil {
-		return ctx.Status(http.StatusBadRequest).JSON(logging.HandlerErrorHttp(ServiceName, 1, "validate"))
+		return ctx.Status(http.StatusBadRequest).JSON(api.HandlerErrorHttp(ServiceName, 1, "validate"))
 	}
 
 	return ctx.Status(http.StatusCreated).JSON(fiber.Map{"created": true, "data": body})
