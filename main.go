@@ -1,28 +1,28 @@
 package main
 
 import (
+	"api/pkg/logging"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"net/http"
+)
+
+const (
+	ServiceName = "Users"
+	Version     = "0.0.1"
 )
 
 func main() {
 	app := fiber.New(fiber.Config{
-		AppName: "Service: Users",
+		AppName: fmt.Sprintf("Service: %s v%s", ServiceName, Version),
 		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
 			if e, ok := err.(*fiber.Error); ok {
 				code = e.Code
 			}
 
-			err = ctx.Status(code).JSON(fiber.Map{"error": fiber.Map{
-				"type": "UserExaction",
-				"code": 0,
-				"message": err.Error(),
-			}})
-			if err != nil {
-				return ctx.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
-			}
-
-			return nil
+			logging.Error(ServiceName, Version, err.Error())
+			return ctx.Status(code).JSON(logging.HandlerErrorHttp(ServiceName, 0, http.StatusText(http.StatusInternalServerError)))
 		},
 	})
 	handler := Handler{}
