@@ -1,11 +1,10 @@
 package main
 
 import (
-	"api/pkg/logging"
+	"api/pkg/api"
+	"api/pkg/env"
 	"api/service"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"net/http"
 )
 
 const (
@@ -15,21 +14,15 @@ const (
 
 func main() {
 	app := fiber.New(fiber.Config{
-		AppName: fmt.Sprintf("Service: %s v%s", ServiceName, Version),
-		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-			code := fiber.StatusInternalServerError
-			if e, ok := err.(*fiber.Error); ok {
-				code = e.Code
-			}
-
-			logging.Error(ServiceName, Version, err.Error())
-			return ctx.Status(code).JSON(logging.HandlerErrorHttp(ServiceName, 0, http.StatusText(http.StatusInternalServerError)))
-		},
+		AppName:      api.AppName(ServiceName, Version),
+		ErrorHandler: api.ErrorHandlerFiber(ServiceName, Version, env.GetEnvBool("SERVICE_USER_DEV", false)),
 	})
 	handler := Handler{
 		userService: service.NewUserService(),
 	}
 
 	handler.register(app)
-	app.Listen(":8080")
+	if err := app.Listen(":8080"); err != nil {
+		panic(err.Error())
+	}
 }
