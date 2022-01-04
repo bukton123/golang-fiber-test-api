@@ -3,7 +3,7 @@ package main
 import (
 	"api/pkg/api"
 	"api/pkg/validator"
-	"api/spec"
+	"api/services/users/spec"
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"net/http"

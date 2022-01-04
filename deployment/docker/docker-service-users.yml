@@ -1,0 +1,29 @@
+version: "3"
+
+networks:
+  onefence:
+
+services:
+  users:
+    build: ../../services/users
+    networks:
+      - onefence
+  users-dapr:
+    image: daprio/daprd:edge
+    command:
+      [
+          "./daprd",
+          "-app-id",
+          "users",
+          "-app-port",
+          "4000",
+          "-placement-host-address",
+          "placement:50006",
+          "-config",
+          "/configurations/tracing.yaml",
+      ]
+    volumes:
+      - "../dapr/:/configurations"
+    depends_on:
+      - nodeapp
+    network_mode: "service:users"

@@ -1,8 +1,7 @@
 package main
 
 import (
-	"api/mock"
-	"github.com/gofiber/fiber/v2"
+	"api/services/users/mock"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http/httptest"
@@ -19,7 +18,7 @@ func TestServiceUsersGet(t *testing.T) {
 	req := httptest.NewRequest("GET", "/users", nil)
 	res, _ := app.Test(req, -1)
 
-	bodyByte, err  := ioutil.ReadAll(res.Body)
+	bodyByte, err := ioutil.ReadAll(res.Body)
 	assert.NoError(t, err)
 	assert.Equal(t, res.StatusCode, 200, "Expected status code equal 200")
 	assert.NotEmpty(t, res.Body, "Expected data response")

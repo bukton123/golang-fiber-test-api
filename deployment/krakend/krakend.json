@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extra_config": {
+    "github_com/devopsfaith/krakend-cors": {
+      "allow_origins": ["*"],
+      "allow_headers": ["Origin", "Authorization", "Content-Type"],
+      "expose_headers": ["Content-Length"],
+      "max_age": "12h",
+      "allow_methods": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "github_com/devopsfaith/krakend-gologging": {
+      "level": "ERROR",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true,
+      "format": "logstash"
+    },
+    "github_com/devopsfaith/krakend-opencensus": {
+      "sample_rate": 100,
+      "reporting_period": 1,
+      "exporters": {
+        "zipkin": {
+          "collector_url": "http://tracing:9411/api/v2/spans",
+          "service_name": "krakend"
+        }
+      }
+    }
+  },
+  "plugin": {
+    "pattern": ".so",
+    "folder": "/opt/krakend/plugins/"
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "Gateway",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/api/users",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "method": "GET",
+          "url_pattern": "/users",
+          "extra_config": {},
+          "host": ["http://users:8080"]
+        }
+      ]
+    }
+  ]
+}

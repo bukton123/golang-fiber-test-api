@@ -7,28 +7,35 @@ import (
 
 var logger *zap.Logger
 
-func init() {
-	if logger == nil {
-		var err error
-		logger, err = zap.NewProduction()
-		if err != nil {
-			log.Fatalf("can't initialize zap logger: %v", err)
-		}
+func New(service string, version string) *zap.Logger {
+	var err error
+	cfg := zap.Config{
+		Encoding: "json",
+		Level:    zap.NewAtomicLevelAt(zap.DebugLevel),
+		InitialFields: map[string]interface{}{
+			"service": service,
+			"version": version,
+		}}
 
-		defer logger.Sync()
+	b, err := cfg.Build()
+	if err != nil {
+		log.Fatalf("can't initialize zap logger: %v", err)
+
 	}
+
+	return b
 }
 
-func Info(service string, version string, message string) {
-	logger.Error(message, output(service, version)...)
+func Info(message string) {
+	logger.Error(message)
 }
 
-func Error(service string, version string, message string) {
-	logger.Error(message, output(service, version)...)
+func Error(message string) {
+	logger.Error(message)
 }
 
-func Warn(service string, version string, message string) {
-	logger.Warn(message, output(service, version)...)
+func Warn(message string) {
+	logger.Warn(message)
 }
 
 func output(service string, version string) []zap.Field {

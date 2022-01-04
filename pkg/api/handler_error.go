@@ -41,7 +41,7 @@ func ErrorHandlerFiber(service string, version string, dev bool) fiber.ErrorHand
 			text = err.Error()
 		}
 
-		logging.Error(service, version, err.Error())
+		logging.Error(err.Error())
 		return ctx.Status(code).JSON(HandlerErrorHttp(service, 0, text))
 	}
 }

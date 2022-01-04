@@ -1,6 +1,6 @@
 package service
 
-import "api/spec"
+import "api/services/users/spec"
 
 type UserService struct{}
 

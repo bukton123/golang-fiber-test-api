@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  placement:
+    image: "daprio/dapr"
+    command: [ "./placement", "-port", "50006" ]
+    ports:
+      - "50006:50006"
+    networks:
+      - onefence
+
+  tracing:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - onefence
+
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+networks:
+  onefence:
