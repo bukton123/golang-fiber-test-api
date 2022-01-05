@@ -1,11 +1,18 @@
-version: "3"
+version: "3.9"
 
 networks:
   onefence:
 
 services:
   users:
-    build: ../../services/users
+    build:
+      dockerfile: Dockerfile-go
+      context: .
+      target: dev
+    environment:
+      service_path: services/users
+    volumes:
+      - ../..:/onefence
     networks:
       - onefence
   users-dapr:
