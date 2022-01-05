@@ -2,6 +2,6 @@ package spec
 
 type (
 	UserService interface {
-		Find () string
+		Find() (interface{}, error)
 	}
 )

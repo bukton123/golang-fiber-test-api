@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/pkg/api"
+	"api/pkg/database"
 	"api/pkg/env"
 	"api/pkg/logging"
 	"api/pkg/validator"
@@ -16,8 +17,11 @@ const (
 )
 
 func main() {
-	log := logging.New(ServiceName, Version)
-	defer log.Sync()
+	logging.New(ServiceName, Version)
+	defer logging.Close()
+
+	connect := database.NewMongoDB(env.GetEnvString("SERVICE_USER_MONGODB", "mongodb://localhost:27017"))
+	defer connect.Close()
 
 	app := fiber.New(fiber.Config{
 		AppName:      api.AppName(ServiceName, Version),
@@ -29,7 +33,7 @@ func main() {
 
 	handler := Handler{
 		validate:    validator.New(),
-		userService: service.NewUserService(),
+		userService: service.NewUserService(connect),
 	}
 
 	handler.register(app)

@@ -21,7 +21,12 @@ func (h *Handler) register(app *fiber.App) {
 }
 
 func (h *Handler) main(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{"data": h.userService.Find()})
+	result, err := h.userService.Find()
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(fiber.Map{"data": result})
 }
 
 func (h *Handler) err(ctx *fiber.Ctx) error {
