@@ -1,0 +1,38 @@
+version: "3.9"
+
+networks:
+  onefence:
+
+services:
+  subscribe:
+    build:
+      dockerfile: Dockerfile-go
+      context: .
+      target: dev
+    environment:
+      service_path: services/subscribe
+    volumes:
+      - ../..:/onefence
+    networks:
+      - onefence
+  subscribe-dapr:
+    image: daprio/daprd:edge
+    command:
+      [
+          "./daprd",
+          "-app-id",
+          "subscribe",
+          "-app-port",
+          "4000",
+          "-placement-host-address",
+          "placement:50006",
+          "-config",
+          "/configurations/config.yml",
+          "-components-path",
+          "/configurations/components"
+      ]
+    volumes:
+      - "../dapr/:/configurations"
+    depends_on:
+      - subscribe
+    network_mode: "service:subscribe"

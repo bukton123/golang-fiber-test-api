@@ -24,5 +24,19 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=password
 
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - onefence
+
+  rabbitmq:
+      image: rabbitmq:3.9-management-alpine
+      ports:
+        - "15672:15672"
+      networks:
+        - onefence
+
 networks:
   onefence:
